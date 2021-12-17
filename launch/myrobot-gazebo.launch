@@ -1,0 +1,54 @@
+<launch>
+    <!-- gazebo parameters default -->
+    <arg name="paused" default="false"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+    <arg name="world" default="$(find myRobotGazebo)/urdf/gazebo/wall.world"/>
+
+    <!-- launch gazebo -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world)" />
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="headless" value="$(arg headless)"/>
+    </include>
+
+    <group ns="robot1">
+        <!-- set robot model parameters -->
+        <param name="robot_description" 
+        command="$(find xacro)/xacro --inorder $(find myRobotGazebo)/urdf/myrobot-laser-gazebo.xacro ns:=robot1"/>   
+        <!-- run `joint_state_publisher` node, publish robot's joint status -->
+        <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" />   
+        <!-- run `joint_state_publisher` node, publish transform -->
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />     
+        <!-- run Rviz visulize GUI -->
+        <node name="rviz" pkg="rviz" type="rviz" args="-d $(find myRobot)/config/myrobot-laser.rviz" required="true" />        
+        <!-- load robot model in gazebo -->
+        <node pkg="gazebo_ros" type="spawn_model" name="gazebo_model"
+            args="-urdf -model robot1 -param robot_description"  />
+    </group>
+
+    <group ns="robot2">
+        <param name="robot_description" 
+        command="$(find xacro)/xacro --inorder $(find myRobotGazebo)/urdf/myrobot-laser-gazebo.xacro ns:=robot2"/>
+        <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" />
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+        <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find myRobot)/config/myrobot-laser.rviz" required="true" /> -->
+        <node pkg="gazebo_ros" type="spawn_model" name="gazebo_model"
+            args="-urdf -model robot2 -param robot_description -x 2"  />
+    </group>
+
+    <group ns="robot3">
+        <param name="robot_description" 
+        command="$(find xacro)/xacro --inorder $(find myRobotGazebo)/urdf/myrobot-laser-gazebo.xacro ns:=robot2"/>
+        <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" />
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+        <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find myRobot)/config/myrobot-laser.rviz" required="true" /> -->
+        <node pkg="gazebo_ros" type="spawn_model" name="gazebo_model"
+            args="-urdf -model robot3 -param robot_description -y 2"  />
+    </group>
+</launch>

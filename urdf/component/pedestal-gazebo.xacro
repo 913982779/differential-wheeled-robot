@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<!-- pedestal and pedestal-props -->
+<robot name="pedestal" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:include filename="$(find myRobotGazebo)/urdf/props/imatrix-props.xacro" />
+    <xacro:include filename="$(find myRobotGazebo)/urdf/props/color-props.xacro" />
+
+    <xacro:property name="pedestal_radius" value="0.175" />
+    <xacro:property name="pedestal_length" value="0.06" />
+    <xacro:property name="pedestal_mass" value="0.25" />
+    <!-- distance between base and floor -->
+    <xacro:property name="pedestal_floor_distan" value="0.01" />
+    <!-- distance between wheels -->
+    <xacro:property name="pedestal_wheel_distan" value="0.235" />
+
+    <!-- pedestal macro -->
+    <xacro:macro name="base_link">
+        <link name="base_link">
+            <visual>
+                <origin xyz=" 0 0 ${pedestal_floor_distan + pedestal_length / 2}" rpy="0 0 0" />
+                <geometry>
+                    <cylinder length="${pedestal_length}" radius="${pedestal_radius}"/>
+                </geometry>
+                <Yellow />
+            </visual>
+            <collision>
+                <geometry>
+                    <cylinder radius="${pedestal_radius}" length="${pedestal_length}" />
+                </geometry>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+            </collision>
+            <xacro:cylinder_inertial_matrix m="${pedestal_mass}" r="${pedestal_radius}" h="${pedestal_length}" />
+        </link>  
+
+        <!-- color -->
+        <gazebo reference="base_link">
+            <material>Gazebo/Yellow</material>
+        </gazebo>
+    </xacro:macro>
+</robot>

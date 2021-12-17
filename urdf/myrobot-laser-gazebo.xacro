@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<robot name="mbot_gazebo" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- /////////////////////////////////////    INCLUDE   //////////////////////////////////////////// -->
+    <!-- pedstal -->
+    <xacro:include filename="$(find myRobotGazebo)/urdf/component/pedestal-gazebo.xacro" />
+    <!-- wheel -->
+    <xacro:include filename="$(find myRobotGazebo)/urdf/component/wheel-gazebo.xacro" />
+    <!-- kinect -->
+    <xacro:include filename="$(find myRobotGazebo)/urdf/component/kinect.xacro" />
+    <!-- laser -->
+    <xacro:include filename="$(find myRobotGazebo)/urdf/component/laser-gazebo.xacro" />
+    
+
+<!-- /////////////////////////////////////    MAIN    ///////////////////////////////////////////// -->
+    <xacro:base_link/>
+    <!-- add drive wheels -->
+    <xacro:add_drive_wheels name="left_drive_wheel" flag="1" />
+    <xacro:add_drive_wheels name="right_drive_wheel" flag="-1" />
+    <!-- add driven wheels -->
+    <xacro:add_driven_wheels name="left_driven_wheel" flag="1" />
+    <xacro:add_driven_wheels name="right_driven_wheel" flag="-1" />
+    <!-- add kinect -->
+    <xacro:kinect_link/>
+    <!-- add laser -->
+    <xacro:laser_link/>
+
+    <!-- controller -->
+    <gazebo>
+        <plugin name="differential_drive_controller" 
+                filename="$(find myRobotGazebo)/urdf/gazebo/libgazebo_ros_diff_drive.so">
+            <rosDebugLevel>Debug</rosDebugLevel>
+            <publishWheelTF>true</publishWheelTF>
+            <robotNamespace>/</robotNamespace>
+            <publishTf>1</publishTf>
+            <publishWheelJointState>true</publishWheelJointState>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>100.0</updateRate>
+            <legacyMode>true</legacyMode>
+            <leftJoint>left_drive_wheel2base_link</leftJoint>
+            <rightJoint>right_drive_wheel2base_link</rightJoint>
+            <wheelSeparation>${pedestal_radius*2}</wheelSeparation>
+            <wheelDiameter>${2*drive_wheel_radius}</wheelDiameter>
+            <broadcastTF>1</broadcastTF>
+            <wheelTorque>40</wheelTorque>
+            <wheelAcceleration>1.8</wheelAcceleration>
+            <commandTopic>cmd_vel</commandTopic>
+            <odometryFrame>odom</odometryFrame> 
+            <odometryTopic>odom</odometryTopic> 
+            <robotBaseFrame>base_link</robotBaseFrame>
+        </plugin>
+    </gazebo> 
+
+</robot>

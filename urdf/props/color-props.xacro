@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<!-- color-props -->
+<robot name="color_props" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- Yellow -->
+    <xacro:macro name="Yellow">
+        <material name="Yellow">
+            <color rgba="1 0.4 0 1"/>
+        </material>
+    </xacro:macro>
+    <!-- Black -->
+    <xacro:macro name="Black">
+        <material name="Black">
+            <color rgba="0 0 0 1"/>
+        </material>
+    </xacro:macro>
+    <!-- White -->
+    <xacro:macro name="White">
+        <material name="White">
+            <color rgba="1 1 1 0.95"/>
+        </material>
+    </xacro:macro>
+    <!-- Blue -->
+    <xacro:macro name="Blue">
+        <material name="Blue">
+            <color rgba="0 0 1 1"/>
+        </material>
+    </xacro:macro>
+</robot>

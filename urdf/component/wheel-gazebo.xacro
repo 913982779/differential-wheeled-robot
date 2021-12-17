@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+<!-- wheel and wheel-props(parent-link must be base-link -->
+<robot name="wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- //////////////////////////    INCLUDE   //////////////////////////// -->
+    <xacro:include filename="$(find myRobotGazebo)/urdf/props/color-props.xacro" />
+    <xacro:include filename="$(find myRobotGazebo)/urdf/props/const-props.xacro" />
+    <xacro:include filename="$(find myRobotGazebo)/urdf/props/imatrix-props.xacro" />
+    <!-- pedestal -->
+    <xacro:include filename="$(find myRobotGazebo)/urdf/component/pedestal-gazebo.xacro" />
+
+    <!-- ///////////////////////// drive wheels //////////////////////////////////// -->
+    <!-- drive wheels props -->
+    <xacro:property name="drive_wheel_radius" value="0.03" />
+    <xacro:property name="drive_wheel_length" value="0.025" />
+    <xacro:property name="drive_wheel_mass" value="0.025" />
+
+    <!-- drive wheel macro -->
+    <xacro:macro name="add_drive_wheels" params="name flag">
+      <link name="${name}">
+        <visual>
+          <geometry>
+            <cylinder radius="${drive_wheel_radius}" length="${drive_wheel_length}" />
+          </geometry>
+          <origin xyz="0.0 0.0 0.0" rpy="${PI / 2} 0.0 0.0" />
+          <White />
+        </visual>
+        <!-- collision-props -->
+        <collision>
+          <origin xyz="0 0 0" rpy="${PI / 2} 0 0" />
+          <geometry>
+            <cylinder radius="${drive_wheel_radius}" length = "${drive_wheel_length}"/>
+          </geometry>
+        </collision>
+        <!-- dynamic-props -->
+        <xacro:cylinder_inertial_matrix m="${drive_wheel_mass}" r="${drive_wheel_radius}"
+                                        h="${drive_wheel_length}" />
+      </link>
+
+      <joint name="${name}2base_link" type="continuous">
+        <parent link="base_link" />
+        <child link="${name}" />
+        <origin xyz="0 ${flag * pedestal_wheel_distan / 2} 
+                     ${drive_wheel_radius / 2}" />
+        <axis xyz="0 1 0" />
+      </joint>
+
+      <!-- color -->
+      <gazebo reference="${name}">
+        <material>Gazebo/White</material>
+      </gazebo>
+
+      <!-- transmission -->
+      <transmission name="${name}_trans">
+          <type>transmission_interface/SimpleTransmission</type>
+          <joint name="${name}2base_link" >
+              <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+          </joint>
+          <actuator name="${name}_motor">
+              <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+              <mechanicalReduction>1</mechanicalReduction>
+          </actuator>
+      </transmission>
+    </xacro:macro>
+
+    <!-- ///////////////////////// driven wheels //////////////////////////////////// -->
+    <!-- driven wheels props -->
+    <xacro:property name="driven_wheel_radius" value="0.01" />
+    <xacro:property name="driven_wheel_length" value="0.01" />
+    <xacro:property name="driven_wheel_mass" value="0.01" />
+
+    <!-- driven wheel macro -->
+    <xacro:macro name="add_driven_wheels" params="name flag">
+      <link name="${name}">
+        <!-- visual-props -->
+        <visual>
+          <geometry>
+            <cylinder radius="${driven_wheel_radius}" length="${driven_wheel_length}" />
+          </geometry>
+          <origin xyz="0.0 0.0 0.0" rpy="${PI / 2} 0.0 0.0" />
+          <White />
+        </visual>
+        <!-- collision-props -->
+        <collision>
+          <origin xyz="0 0 0" rpy="${PI / 2} 0 0" />
+          <geometry>
+            <cylinder radius="${driven_wheel_radius}" length = "${driven_wheel_length}"/>
+          </geometry>
+        </collision>
+        <!-- dynamic-props -->
+        <xacro:cylinder_inertial_matrix m="${driven_wheel_mass}" r="${driven_wheel_radius}"
+                                        h="${driven_wheel_length}" />
+      </link>
+
+      <joint name="${name}2base_link" type="continuous">
+        <parent link="base_link" />
+        <child link="${name}" />
+        <origin xyz="${flag * pedestal_wheel_distan / 2} 0  
+                     ${driven_wheel_radius / 2}" />
+        <axis xyz="0 1 0" />
+      </joint>
+
+      <!-- color -->
+      <gazebo reference="${name}">
+        <material>Gazebo/White</material>
+      </gazebo>
+
+      <!-- transmission -->
+      <transmission name="${name}_trans">
+          <type>transmission_interface/SimpleTransmission</type>
+          <joint name="${name}2base_link" >
+              <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+          </joint>
+          <actuator name="${name}_motor">
+              <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+              <mechanicalReduction>1</mechanicalReduction>
+          </actuator>
+      </transmission>
+
+    </xacro:macro>
+</robot>
